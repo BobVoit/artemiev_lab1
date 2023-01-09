@@ -34,23 +34,6 @@ namespace artemiev_lab1
             return new Galois(Galois.p - this.value);
         }
 
-        public Galois getReverseValue()
-        {
-            bool isContinue = true;
-            int val = 0;
-
-            Galois res = new Galois();
-            while (val < Galois.p || isContinue)
-            {
-                res = this * (new Galois(val));
-                if (res.value == 1)
-                    isContinue = false;
-                val++;
-            }
-
-            return res;
-        }
-
         public static Galois operator +(Galois gal1, Galois gal2)
         {
             int value = (gal1.value + gal2.value);
@@ -87,12 +70,21 @@ namespace artemiev_lab1
         public static Galois operator /(Galois gal1, Galois gal2)
         {
 
-            int value = gal1.value * gal2.getReverseValue().value;
-            if (value >= Galois.p)
+            //int value = gal1.value * gal2.getReverseValue().value;
+            //if (value >= Galois.p)
+            //{
+            //    return new Galois(value % Galois.p);
+            //}
+            //return new Galois(value);
+
+            for (int val = 0; val < Galois.p; val++) 
             {
-                return new Galois(value % Galois.p);
+                Galois res = new Galois(val);
+                if ((gal1 * res).value == gal2.value)
+                    return res;
             }
-            return new Galois(value);
+
+            return new Galois(0);
         }
 
         public override string ToString()

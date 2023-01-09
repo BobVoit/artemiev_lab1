@@ -6,36 +6,31 @@ namespace MyApp // Note: actual namespace depends on the project name.
     internal class Program
     {
         static void Main(string[] args)
-        {
-            //Console.WriteLine("Введите характеристику поля \"p\" (простое число):");
+        {        
+            int p = 0;
+            while (p < 2)
+            {
+                Console.WriteLine("Введите характеристику поля \"p\" (простое число) >= 2:");
+                p = Convert.ToInt32(Console.ReadLine());
+            }
 
-            //int p = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Введите размер матриц:");
 
-            //Console.WriteLine("Введите размер матрицы:");
+            int size = Convert.ToInt32(Console.ReadLine());
 
-            //int size = Convert.ToInt32(Console.ReadLine());
-            //Galois.p = p;
+            Galois.p = p;
 
-            Galois.p = 5;
+            Console.WriteLine("Заполнение матрицы 1:");
 
+            Matrix matrix1 = inputMatrix(size);
 
-            Galois[,] galMatr1 = new Galois[3, 3] { 
-                { new Galois(3), new Galois(2), new Galois(2) }, 
-                { new Galois(1), new Galois(1) , new Galois(3) }, 
-                { new Galois(0), new Galois(4), new Galois(4) } 
-            };
-            Galois[,] galMatr2 = new Galois[3, 3] { 
-                { new Galois(4), new Galois(3) , new Galois(1) },
-                { new Galois(4), new Galois(2), new Galois(0) }, 
-                { new Galois(2), new Galois(2), new Galois(2) } 
-            };
+            Console.WriteLine("Заполнение матрицы 2:");
+            Matrix matrix2 = inputMatrix(size);
 
-            Console.WriteLine("Матрица 1:");
-            Matrix matrix1 = new Matrix(galMatr1);
+            Console.WriteLine("Матрица 1:");         
             matrix1.print();
 
-            Console.WriteLine("Матрица 2:");
-            Matrix matrix2 = new Matrix(galMatr2);        
+            Console.WriteLine("Матрица 2:");       
             matrix2.print();
 
             Console.WriteLine("Сложение матриц:");
@@ -62,8 +57,49 @@ namespace MyApp // Note: actual namespace depends on the project name.
             Console.WriteLine();
 
             Console.WriteLine("Обратная матрица матрице 1:");
-            Matrix inverseMatrix = Matrix.inverse(matrix1);
-            inverseMatrix.print();
+            Matrix inverseMatrix1 = Matrix.inverse(matrix1);
+            if (inverseMatrix1 != null)
+                inverseMatrix1.print();
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("Обратная матрица матрице 2:");
+            Matrix inverseMatrix2 = Matrix.inverse(matrix2);
+            if (inverseMatrix2 != null)
+                inverseMatrix2.print();
+        }
+
+        static Matrix inputMatrix(int size)
+        {
+            Galois[,] galMatrix = new Galois[size, size];
+            for (int i = 0; i < size; i++)
+            {
+                bool continueRead = true;
+                int[] line = new int[0];
+                while (continueRead)
+                {
+                    Console.WriteLine($"Заполнение строки {i + 1}/{size} целыми числами через пробел в промежутке [0; {Galois.p - 1}]");
+
+                    line = Console.ReadLine().ToString().Split(" ", StringSplitOptions.RemoveEmptyEntries).Select(i =>
+                    {
+                        if (int.Parse(i) >= Galois.p)
+                            throw new Exception("Число не входим поле Галуа");
+                        return int.Parse(i);
+                    }).ToArray<int>(); ;
+
+                    if (line.Length == size)
+                        continueRead = false;
+                }
+                for (int j = 0; j < size; j++)
+                {
+                    galMatrix[i, j] = new Galois(line[j]);
+                }
+            }
+
+            return new Matrix(galMatrix);
         }
     }
 }

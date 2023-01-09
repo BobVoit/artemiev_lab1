@@ -125,9 +125,9 @@ namespace artemiev_lab1
 
             // Find determinant of [,]A
             Galois det = getDeterminant(A, size);
-            if (det == new Galois(0))
+            if (det.value == 0)
             {
-                Console.Write("Singular matrix, can't find its inverse");
+                Console.Write("Обратной матрицы не существует");
                 return null;
             }
 
